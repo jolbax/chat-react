@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 
 class RoomList extends Component {
@@ -32,9 +33,11 @@ class RoomList extends Component {
     return (
       <section className="rooms-list">
         <ul className="current-list">
-          {this.state.rooms.map(room => {
-            return <li key={room.key}>{room.name}</li>;
-          })}
+          {this.state.rooms.map(room =>
+            <Link to={`/room/${room.key}`} key={room.key}>
+                <li key={room.key} onClick={() => this.props.handleRoomClick(room)}>{room.name}</li>
+            </Link>
+          )}
         </ul>
         <form className="create-room" onSubmit={e => this.createRoom(e)}>
           <label>

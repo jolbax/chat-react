@@ -1,11 +1,13 @@
-import * as firebase from 'firebase';
-import React, { Component } from 'react';
-import RoomList from './components/RoomList';
-import './App.css';
+import * as firebase from "firebase";
+import React, { Component } from "react";
+import { Route } from "react-router-dom";
+import RoomList from "./components/RoomList";
+import MessageList from "./components/MessageList";
+import "./App.css";
 
 // Initialize Firebase
 var config = {
-  apiKey: "AIzaSyDa0wveyGiBrYjWEafAFBB6fRCOMiOzB-8",
+  apiroomId: "AIzaSyDa0wveyGiBrYjWEafAFBB6fRCOMiOzB-8",
   authDomain: "react-chat-7f917.firebaseapp.com",
   databaseURL: "https://react-chat-7f917.firebaseio.com",
   projectId: "react-chat-7f917",
@@ -15,10 +17,45 @@ var config = {
 firebase.initializeApp(config);
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        currentChatRoomName: "",
+        currentChatRoomId: ""
+    };
+  }
+
+  handleRoomClick(room) {
+    console.log("Click on: " +  room.name, room.key);
+
+
+    this.setState({
+      currentChatRoomName: room.name,
+      currentChatRoomId: room.key
+    });
+  }
+
   render() {
     return (
       <div className="app">
-        <RoomList firebase={firebase}/>
+        <header>
+          <h1>React Chat</h1>
+        </header>
+        <aside>
+          <RoomList firebase={firebase} handleRoomClick={(room) => this.handleRoomClick(room)} />
+        </aside>
+        <main>
+          <Route
+            path="/room/:roomId"
+            render={() =>
+                 <MessageList
+                  firebase={firebase}
+                  currentChatRoomName={this.state.currentChatRoomName}
+                  currentChatRoomId={this.state.currentChatRoomId}
+              />
+            }
+          />
+        </main>
       </div>
     );
   }
