@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-
 class RoomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      newRoomName: "",
       rooms: []
     };
     this.roomsRef = this.props.firebase.database().ref("rooms");
@@ -22,9 +22,31 @@ class RoomList extends Component {
 
   createRoom(e) {
     e.preventDefault();
-    const newRoomName = this.newRoomName.value;
-    this.roomsRef.push({
-      name: newRoomName
+    if (this.state.newRoomName) {
+      if (
+        !this.state.rooms.filter(room => room.name === this.state.newRoomName)
+          .length > 0
+      ) {
+        this.roomsRef.push({
+          name: this.state.newRoomName
+        });
+      } else {
+        alert(`"${this.state.newRoomName}" already exists. Choose another name`);
+      }
+    } else {
+      alert('Please provide a name');
+    }
+  }
+
+  handleInputChange(e) {
+    this.setState({
+      newRoomName: e.target.value
+    });
+  }
+
+  clearInput() {
+    this.setState({
+      newRoomName: ""
     });
   }
 
@@ -37,11 +59,12 @@ class RoomList extends Component {
           })}
         </ul>
         <form className="create-room" onSubmit={e => this.createRoom(e)}>
-          <label>
-            Add a new chat room:
-            <input type="text" ref={e => (this.newRoomName = e)} />
-          </label>
-          <input type="submit" value="Submit" />
+          <input
+            type="text"
+            value={this.state.newRoomName}
+            onChange={e => this.handleInputChange(e)}
+          />
+          <input type="submit" value="New room" />
         </form>
       </section>
     );
