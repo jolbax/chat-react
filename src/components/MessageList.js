@@ -9,21 +9,15 @@ class MessageList extends Component {
     this.messagesRef = this.props.firebase.database().ref("messages");
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.currentChatRoomId !== prevProps.currentChatRoomId) {
-      this.setState({message: []});
-      this.updateMessages(this.props.currentChatRoomId);
-    }
+  componentDidMount() {
+      this.updateMessages();
   }
 
-  updateMessages(chatRoomId) {
+  updateMessages() {
     this.messagesRef
-      .orderByChild("roomId")
-      .equalTo(chatRoomId)
       .on("child_added", snapshot => {
         const message = snapshot.val();
         message.key = snapshot.key;
-        console.log(snapshot);
         this.setState({
           messages: this.state.messages.concat(message)
         });
@@ -34,8 +28,10 @@ class MessageList extends Component {
     return (
       <section className="message-list">
         <h2>{this.props.currentChatRoomName}</h2>
-        {this.state.messages.map((message, index) => (
-          <div key={index}>
+        {this.state.messages
+        .filter(message => message.roomId === this.props.currentChatRoomId)
+        .map((message, index) => (
+          <div className="message" key={index}>
             <div>{message.username}</div>
             <div>{message.content}</div>
             <div>{message.sentAt}</div>
