@@ -21,6 +21,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: "",
       currentChatRoomName: "",
       currentChatRoomId: ""
     };
@@ -33,6 +34,12 @@ class App extends Component {
     });
   }
 
+  setUser(user) {
+    this.setState({
+      user: user
+    });
+  }
+
   render() {
     return (
       <div className="app">
@@ -40,7 +47,15 @@ class App extends Component {
           <h1>React Chat</h1>
         </header>
         <aside>
-          <User firebase={firebase} />
+          <User
+            firebase={firebase}
+            setUser={user => this.setUser(user)}
+            userLabel={
+              this.state.user ? `${this.state.user.displayName}` : "Guest"
+            }
+            buttonValue={this.state.user ? "Sign-out" : "Sign-in"}
+            userLoggedIn={this.state.user ? true : false}
+          />
           <RoomList
             firebase={firebase}
             handleRoomClick={room => this.handleRoomClick(room)}

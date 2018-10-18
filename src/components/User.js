@@ -1,42 +1,23 @@
 import React, { Component } from "react";
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: "",
-      token: ""
-    };
+  componentDidMount() {
+    this.props.firebase
+      .auth()
+      .onAuthStateChanged(user => this.props.setUser(user));
   }
-  handleAuth() {
+
+  handleAuth(status) {
     const provider = new this.props.firebase.auth.GoogleAuthProvider();
     const auth = this.props.firebase.auth();
-    if (this.state.user) {
-      auth
-        .signOut()
-        .then(() => {
-          this.setState({
-            token: "",
-            user: ""
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    if (this.props.userLoggedIn) {
+      auth.signOut().catch(error => {
+        console.log(error);
+      });
     } else {
-      auth
-        .signInWithPopup(provider)
-        .then(result => {
-          this.setState({
-            token: result.credential.accessToken,
-            user: result.user
-          });
-        })
-        .catch(error => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
+      auth.signInWithPopup(provider).catch(error => {
+        console.log(error.code, error.message);
+      });
     }
   }
 
@@ -44,11 +25,10 @@ class User extends Component {
     return (
       <section className="user-authentication">
         <label>
-          {this.state.user ? `Hi ${this.state.user.displayName}` : "Welcome!"}
+          {this.props.userLabel}
           <input
-            name="signin-button"
             type="submit"
-            value={this.state.user ? "Sign-out" : "Sign-in"}
+            value={this.props.buttonValue}
             onClick={() => this.handleAuth()}
           />
         </label>
