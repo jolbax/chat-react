@@ -31,6 +31,7 @@ class RoomList extends Component {
         this.roomsRef.push({
           name: this.state.newRoomName
         });
+        this.clearInput();
       } else {
         alert(`"${this.state.newRoomName}" already exists. Choose another name`);
       }
