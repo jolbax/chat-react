@@ -69,6 +69,9 @@ class App extends Component {
                 firebase={firebase}
                 currentChatRoomName={this.state.currentChatRoomName}
                 currentChatRoomId={this.state.currentChatRoomId}
+                username={
+                  this.state.user ? this.state.user.displayName : "Guest"
+                }
               />
             )}
           />
