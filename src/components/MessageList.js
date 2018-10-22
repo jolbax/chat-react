@@ -12,15 +12,56 @@ class MessageList extends Component {
   }
 
   componentDidMount() {
-    this.messagesRef.on("child_added", snapshot => {
-      this.updateCreatedMessages(snapshot);
-    });
-    this.messagesRef.on("child_removed", snapshot => {
-      this.updateDeletedMessages(snapshot);
-    });
-    this.messagesRef.on("child_changed", snapshot => {
-      this.updateEditedMessages(snapshot);
-    });
+    this.messagesRef
+      .orderByChild("roomId")
+      .equalTo(this.props.match.params.roomId)
+      .on("child_added", snapshot => {
+        this.updateCreatedMessages(snapshot);
+      });
+    this.messagesRef
+      .orderByChild("roomId")
+      .equalTo(this.props.match.params.roomId)
+      .on("child_removed", snapshot => {
+        this.updateDeletedMessages(snapshot);
+      });
+    this.messagesRef
+      .orderByChild("roomId")
+      .equalTo(this.props.match.params.roomId)
+      .on("child_changed", snapshot => {
+        this.updateEditedMessages(snapshot);
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.roomId !== this.props.match.params.roomId) {
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(prevProps.match.params.roomId)
+        .off();
+
+      this.setState({
+        messages: []
+      });
+
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(this.props.match.params.roomId)
+        .on("child_added", snapshot => {
+          this.updateCreatedMessages(snapshot);
+        });
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(this.props.match.params.roomId)
+        .on("child_removed", snapshot => {
+          this.updateDeletedMessages(snapshot);
+        });
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(this.props.match.params.roomId)
+        .on("child_changed", snapshot => {
+          this.updateEditedMessages(snapshot);
+        });
+    }
   }
 
   updateCreatedMessages(snapshot) {
@@ -45,7 +86,7 @@ class MessageList extends Component {
       .indexOf(snapshot.key);
     const editedMessages = [...this.state.messages];
     editedMessages[index].content = snapshot.val().content;
-    this.setState({messages: editedMessages});
+    this.setState({ messages: editedMessages });
   }
 
   handleInputChange(e) {
@@ -86,9 +127,11 @@ class MessageList extends Component {
   editMessage(message) {
     const newContent = prompt("Edit your message", message.content);
     if (newContent === null || newContent === message.content) {
-      return
+      return;
     } else {
-      this.messagesRef.child(message.key).set({ content: newContent });
+      const newMessage = message;
+      newMessage.content = newContent;
+      this.messagesRef.child(message.key).set(message);
     }
   }
 
@@ -97,7 +140,6 @@ class MessageList extends Component {
       <section className="message-list">
         <h2>{this.props.activeRoomName}</h2>
         {this.state.messages
-          .filter(message => message.roomId === this.props.match.params.roomId)
           .map((message, index) => (
             <div className="message" key={index}>
               <div>{message.username}</div>
