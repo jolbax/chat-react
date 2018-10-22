@@ -55,7 +55,7 @@ class MessageList extends Component {
   render() {
     return (
       <section className="message-list">
-        <h2>{this.props.currentChatRoomName}</h2>
+        <h2>{this.props.activeRoomName}</h2>
         {this.state.messages
           .filter(message => message.roomId === this.props.match.params.roomId)
           .map((message, index) => (

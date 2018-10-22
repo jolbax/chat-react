@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class RoomList extends Component {
   constructor(props) {
@@ -13,12 +13,46 @@ class RoomList extends Component {
 
   componentDidMount() {
     this.roomsRef.on("child_added", snapshot => {
-      const room = snapshot.val();
-      room.key = snapshot.key;
-      this.setState({
-        rooms: this.state.rooms.concat(room)
-      });
+      this.updateCreatedRooms(snapshot);
     });
+    this.roomsRef.on("child_changed", snapshot => {
+      this.updateRenamedRooms(snapshot);
+    });
+    this.roomsRef.on("child_removed", snapshot => {
+      this.updateDeletedRooms(snapshot);
+    });
+  }
+
+  updateCreatedRooms(snapshot) {
+    const room = snapshot.val();
+    room.key = snapshot.key;
+    this.setState({
+      rooms: this.state.rooms.concat(room)
+    });
+  }
+
+  updateRenamedRooms(snapshot) {
+    const index = this.state.rooms
+      .map(room => room.key)
+      .indexOf(snapshot.key);
+    const updatedRooms = [...this.state.rooms];
+    updatedRooms[index].name = snapshot.val().name;
+    this.setState({
+      rooms: updatedRooms
+
+    });
+  }
+
+  updateDeletedRooms(snapshot) {
+    const deletedRoom = snapshot.val();
+    deletedRoom.key = snapshot.key;
+    this.setState({
+      rooms: this.state.rooms.filter(room => room.key !== deletedRoom.key)
+    });
+  }
+
+  componentWillUnmount() {
+    this.roomsRef.off();
   }
 
   createRoom(e) {
@@ -33,11 +67,26 @@ class RoomList extends Component {
         });
         this.clearInput();
       } else {
-        alert(`"${this.state.newRoomName}" already exists. Choose another name`);
+        alert(
+          `"${this.state.newRoomName}" already exists. Choose another name`
+        );
       }
     } else {
-      alert('Please provide a name');
+      alert("Please provide a name");
     }
+  }
+
+  removeRoom(room) {
+    this.roomsRef
+      .child(room.key)
+      .remove()
+      .then(() => alert(`Room "${room.name}" has been deleted`))
+      .catch(error => console.log(error));
+  }
+
+  renameRoom(room) {
+    const newRoomName = prompt("Enter a new name");
+    this.roomsRef.child(room.key).set({ name: newRoomName });
   }
 
   handleInputChange(e) {
@@ -55,13 +104,25 @@ class RoomList extends Component {
   render() {
     return (
       <section className="rooms-list">
-        <ul className="current-list">
-          {this.state.rooms.map(room =>
+        {this.state.rooms.map(room => (
+          <div key={room.key}>
             <Link to={`/room/${room.key}`} key={room.key}>
-                <li key={room.key} onClick={() => this.props.handleRoomClick(room)}>{room.name}</li>
+              <div onClick={() => this.props.handleRoomClick(room)}>
+                {room.name}
+              </div>
             </Link>
-          )}
-        </ul>
+            <button
+              className="delete-room"
+              className="icon ion-md-remove-circle"
+              onClick={() => this.removeRoom(room)}
+            />
+            <button
+              className="rename-room"
+              className="icon ion-md-create"
+              onClick={() => this.renameRoom(room)}
+            />
+          </div>
+        ))}
         <form className="create-room" onSubmit={e => this.createRoom(e)}>
           <input
             type="text"
