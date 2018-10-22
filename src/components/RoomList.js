@@ -32,14 +32,11 @@ class RoomList extends Component {
   }
 
   updateRenamedRooms(snapshot) {
-    const index = this.state.rooms
-      .map(room => room.key)
-      .indexOf(snapshot.key);
+    const index = this.state.rooms.map(room => room.key).indexOf(snapshot.key);
     const updatedRooms = [...this.state.rooms];
     updatedRooms[index].name = snapshot.val().name;
     this.setState({
       rooms: updatedRooms
-
     });
   }
 
@@ -49,6 +46,7 @@ class RoomList extends Component {
     this.setState({
       rooms: this.state.rooms.filter(room => room.key !== deletedRoom.key)
     });
+    this.props.deletedRoom = deletedRoom;
   }
 
   componentWillUnmount() {
@@ -85,8 +83,12 @@ class RoomList extends Component {
   }
 
   renameRoom(room) {
-    const newRoomName = prompt("Enter a new name");
-    this.roomsRef.child(room.key).set({ name: newRoomName });
+    const newRoomName = prompt("Rename your room", room.name);
+    if (newRoomName === null || newRoomName === room.name) {
+      return;
+    } else {
+      this.roomsRef.child(room.key).set({ name: newRoomName });
+    }
   }
 
   handleInputChange(e) {
