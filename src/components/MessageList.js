@@ -10,36 +10,41 @@ class MessageList extends Component {
   }
 
   componentDidMount() {
-    this.updateMessages();
+    this.messagesRef
+      .orderByChild("roomId")
+      .equalTo(this.props.match.params.roomId)
+      .on("child_added", snapshot => this.updateMessages(snapshot));
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.roomId !== this.props.match.params.roomId) {
-      this.messagesRef = this.props.firebase.database().ref("messages");
-      this.updateMessages();
-      console.log("should be empty", this.state.messages);
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(prevProps.match.params.roomId)
+        .off();
+
+      this.setState({
+        messages: []
+      });
+
+      this.messagesRef
+        .orderByChild("roomId")
+        .equalTo(this.props.match.params.roomId)
+        .on("child_added", snapshot => this.updateMessages(snapshot));
     }
   }
 
   componentWillUnmount() {
-    // Detach database reference listener
-    this.subscription.off();
+    this.messagesRef.off();
   }
 
-  updateMessages() {
-    this.setState({ messages: [] });
-    this.subscription = this.messagesRef
-      .orderByChild("roomId")
-      .equalTo(this.props.match.params.roomId)
-      .on("child_added", snapshot => {
-        const message = snapshot.val();
-        message.key = snapshot.key;
-        this.setState({
-          messages: this.state.messages.concat(message)
-        });
-        console.log("fetching:", this.state.messages);
-      });
-    console.log("should be full", this.state.messages);
+  updateMessages(snapshot) {
+    console.log(snapshot.val());
+    const message = snapshot.val();
+    message.key = snapshot.key;
+    this.setState({
+      messages: this.state.messages.concat(message)
+    });
   }
 
   render() {
