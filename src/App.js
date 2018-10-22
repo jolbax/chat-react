@@ -22,15 +22,15 @@ class App extends Component {
     super(props);
     this.state = {
       user: "",
-      currentChatRoomName: "",
-      currentChatRoomId: ""
+      activeRoomName: "",
+      activeRoomId: ""
     };
   }
 
   handleRoomClick(room) {
     this.setState({
-      currentChatRoomName: room.name,
-      currentChatRoomId: room.key
+      activeRoomName: room.name,
+      activeRoomId: room.key
     });
   }
 
@@ -67,8 +67,8 @@ class App extends Component {
             render={() => (
               <MessageList
                 firebase={firebase}
-                currentChatRoomName={this.state.currentChatRoomName}
-                currentChatRoomId={this.state.currentChatRoomId}
+                activeRoomName={this.state.activeRoomName}
+                activeRoomId={this.state.activeRoomId}
                 username={
                   this.state.user ? this.state.user.displayName : "Guest"
                 }
