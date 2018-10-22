@@ -114,12 +114,12 @@ class RoomList extends Component {
               </div>
             </Link>
             <button
-              className="delete-room"
+              name="delete-room"
               className="icon ion-md-remove-circle"
               onClick={() => this.removeRoom(room)}
             />
             <button
-              className="rename-room"
+              name="rename-room"
               className="icon ion-md-create"
               onClick={() => this.renameRoom(room)}
             />
