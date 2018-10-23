@@ -139,6 +139,7 @@ class MessageList extends Component {
     return (
       <section className="message-list">
         <h2>{this.props.activeRoomName}</h2>
+        <div className="messages">
         {this.state.messages
           .map((message, index) => (
             <div className="message" key={index}>
@@ -161,6 +162,7 @@ class MessageList extends Component {
               )}
             </div>
           ))}
+        </div>
         <form className="create-message" onSubmit={e => this.pushMessage(e)}>
           <input
             type="text"
