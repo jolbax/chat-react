@@ -108,7 +108,7 @@ class RoomList extends Component {
       <section className="rooms-list">
         {this.state.rooms.map(room => (
           <div key={room.key}>
-            <Link to={`/room/${room.key}`} key={room.key}>
+            <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
               <div onClick={() => this.props.handleRoomClick(room)}>
                 {room.name}
               </div>
