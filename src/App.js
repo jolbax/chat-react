@@ -63,7 +63,7 @@ class App extends Component {
         </aside>
         <main>
           <Route
-            path="/room/:roomId"
+            path="/room/:roomId&:roomName"
             render={() => (
               <MessageList
                 firebase={firebase}

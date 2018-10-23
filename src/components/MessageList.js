@@ -138,7 +138,7 @@ class MessageList extends Component {
   render() {
     return (
       <section className="message-list">
-        <h2>{this.props.activeRoomName}</h2>
+        <h2>{this.props.match.params.roomName}</h2>
         <div className="messages">
           {this.state.messages.map((message, index) => (
             <div className="message" key={index}>
