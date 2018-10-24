@@ -12,60 +12,51 @@ class MessageList extends Component {
   }
 
   componentDidMount() {
-    this.messagesRef
+    this.subscription = this.messagesRef
       .orderByChild("roomId")
-      .equalTo(this.props.match.params.roomId)
-      .on("child_added", snapshot => {
-        this.updateCreatedMessages(snapshot);
-      });
-    this.messagesRef
-      .orderByChild("roomId")
-      .equalTo(this.props.match.params.roomId)
-      .on("child_removed", snapshot => {
-        this.updateDeletedMessages(snapshot);
-      });
-    this.messagesRef
-      .orderByChild("roomId")
-      .equalTo(this.props.match.params.roomId)
-      .on("child_changed", snapshot => {
-        this.updateEditedMessages(snapshot);
-      });
+      .equalTo(this.props.match.params.roomId);
+
+    this.subscription.on("child_added", snapshot => {
+      this.updateCreatedMessages(snapshot);
+    });
+    this.subscription.on("child_removed", snapshot => {
+      this.updateDeletedMessages(snapshot);
+    });
+    this.subscription.on("child_changed", snapshot => {
+      this.updateEditedMessages(snapshot);
+    });
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.roomId !== this.props.match.params.roomId) {
-      this.messagesRef
-        .orderByChild("roomId")
-        .equalTo(prevProps.match.params.roomId)
-        .off();
+      this.subscription.off();
 
       this.setState({
         messages: []
       });
 
-      this.messagesRef
+      this.subscription = this.messagesRef
         .orderByChild("roomId")
-        .equalTo(this.props.match.params.roomId)
-        .on("child_added", snapshot => {
-          this.updateCreatedMessages(snapshot);
-        });
-      this.messagesRef
-        .orderByChild("roomId")
-        .equalTo(this.props.match.params.roomId)
-        .on("child_removed", snapshot => {
-          this.updateDeletedMessages(snapshot);
-        });
-      this.messagesRef
-        .orderByChild("roomId")
-        .equalTo(this.props.match.params.roomId)
-        .on("child_changed", snapshot => {
-          this.updateEditedMessages(snapshot);
-        });
+        .equalTo(this.props.match.params.roomId);
+
+      this.subscription.on("child_added", snapshot => {
+        this.updateCreatedMessages(snapshot);
+      });
+      this.subscription.on("child_removed", snapshot => {
+        this.updateDeletedMessages(snapshot);
+      });
+      this.subscription.on("child_changed", snapshot => {
+        this.updateEditedMessages(snapshot);
+      });
     }
 
-    if(prevProps.deletedRoom !== this.props.deletedRoom){
+    if (prevProps.deletedRoom !== this.props.deletedRoom) {
       this.cleanUpMessages(this.props.deletedRoom);
     }
+  }
+
+  componentWillUnmount() {
+    this.subscription.off();
   }
 
   updateCreatedMessages(snapshot) {
@@ -141,10 +132,14 @@ class MessageList extends Component {
 
   cleanUpMessages(room) {
     console.log("Will do", room.name);
-    const subscription = this.messagesRef.orderByChild('roomId').equalTo(room.key);
+    const subscription = this.messagesRef
+      .orderByChild("roomId")
+      .equalTo(room.key);
 
-    subscription.on('child_added', snapshot => {
-      this.messagesRef.child(snapshot.key).remove()
+    subscription.on("child_added", snapshot => {
+      this.messagesRef
+        .child(snapshot.key)
+        .remove()
         .then(() => this.updateDeletedMessages(snapshot))
         .catch(error => console.log(error));
     });
@@ -154,7 +149,11 @@ class MessageList extends Component {
   render() {
     return (
       <section className="message-list">
-        <h2>{this.props.deletedRoom.name === this.props.match.params.roomName ? "Room unavailable" : this.props.match.params.roomName}</h2>
+        <h2>
+          {this.props.deletedRoom.name === this.props.match.params.roomName
+            ? "Room unavailable"
+            : this.props.match.params.roomName}
+        </h2>
         <div className="messages">
           {this.state.messages.map((message, index) => (
             <div className="message" key={index}>
