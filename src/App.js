@@ -23,7 +23,8 @@ class App extends Component {
     this.state = {
       user: "",
       activeRoomName: "",
-      activeRoomId: ""
+      activeRoomId: "",
+      deletedRoom: ""
     };
   }
 
@@ -38,6 +39,10 @@ class App extends Component {
     this.setState({
       user: user
     });
+  }
+
+  setDeletedRoom(room) {
+    this.setState({deletedRoom:room});
   }
 
   render() {
@@ -59,6 +64,7 @@ class App extends Component {
           <RoomList
             firebase={firebase}
             handleRoomClick={room => this.handleRoomClick(room)}
+            deletedRoom={room => this.setDeletedRoom(room)}
           />
         </aside>
         <main>
@@ -72,6 +78,7 @@ class App extends Component {
                 username={
                   this.state.user ? this.state.user.displayName : "Guest"
                 }
+                deletedRoom={this.state.deletedRoom}
               />
             )}
           />

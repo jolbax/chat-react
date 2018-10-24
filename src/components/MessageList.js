@@ -62,6 +62,10 @@ class MessageList extends Component {
           this.updateEditedMessages(snapshot);
         });
     }
+
+    if(prevProps.deletedRoom !== this.props.deletedRoom){
+      this.cleanUpMessages(this.props.deletedRoom);
+    }
   }
 
   updateCreatedMessages(snapshot) {
@@ -135,10 +139,22 @@ class MessageList extends Component {
     }
   }
 
+  cleanUpMessages(room) {
+    console.log("Will do", room.name);
+    const subscription = this.messagesRef.orderByChild('roomId').equalTo(room.key);
+
+    subscription.on('child_added', snapshot => {
+      this.messagesRef.child(snapshot.key).remove()
+        .then(() => this.updateDeletedMessages(snapshot))
+        .catch(error => console.log(error));
+    });
+    subscription.off();
+  }
+
   render() {
     return (
       <section className="message-list">
-        <h2>{this.props.match.params.roomName}</h2>
+        <h2>{this.props.deletedRoom.name === this.props.match.params.roomName ? "Room unavailable" : this.props.match.params.roomName}</h2>
         <div className="messages">
           {this.state.messages.map((message, index) => (
             <div className="message" key={index}>
