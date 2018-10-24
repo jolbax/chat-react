@@ -46,7 +46,7 @@ class RoomList extends Component {
     this.setState({
       rooms: this.state.rooms.filter(room => room.key !== deletedRoom.key)
     });
-    this.props.deletedRoom = deletedRoom;
+    this.props.deletedRoom(deletedRoom);
   }
 
   componentWillUnmount() {
