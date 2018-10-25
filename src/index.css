@@ -65,7 +65,6 @@ aside {
 
 .user-authentication input:hover {
   background: #2c222c;
-  background: lightgray;
 }
 
 .rooms-list {
@@ -101,7 +100,6 @@ aside {
 
 .rooms .room:hover {
   background: #2c222c;
-  background: lightgray;
 }
 
 .rooms .room button {
@@ -140,7 +138,6 @@ aside {
 
 .create-room input:last-child:hover {
   background: #2c222c;
-  background: lightgray;
   border-radius: 10px;
 }
 

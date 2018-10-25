@@ -1,6 +1,6 @@
 $primary-color: rgb(74, 58, 74);
 $hover-aside-color: rgb(44, 34, 44);
-$hover-main-color:lightgray;
+$hover-main-color: lightgray;
 $background: #eee;
 $secondary-color: #fff;
 
@@ -75,7 +75,6 @@ aside {
 
     &:hover {
       background: $hover-aside-color;
-      background: $hover-main-color;
     }
   }
 
@@ -107,7 +106,6 @@ aside {
 
     &:hover {
       background: $hover-aside-color;
-      background: $hover-main-color;
     }
 
     button {
@@ -146,7 +144,6 @@ aside {
 
       &:hover {
         background: $hover-aside-color;
-        background: $hover-main-color;
         border-radius: 10px;
       }
     }
