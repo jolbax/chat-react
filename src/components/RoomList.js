@@ -114,16 +114,22 @@ class RoomList extends Component {
                   # {room.name}
                 </div>
               </Link>
-              <button
-                name="delete-room"
-                className="icon ion-md-remove-circle"
-                onClick={() => this.removeRoom(room)}
-              />
-              <button
-                name="rename-room"
-                className="icon ion-md-create"
-                onClick={() => this.renameRoom(room)}
-              />
+              {this.props.username !== "Guest" ? (
+                <div>
+                  <button
+                    name="delete-room"
+                    className="icon ion-md-remove-circle"
+                    onClick={() => this.removeRoom(room)}
+                  />
+                  <button
+                    name="rename-room"
+                    className="icon ion-md-create"
+                    onClick={() => this.renameRoom(room)}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           ))}
         </div>

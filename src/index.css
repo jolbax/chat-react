@@ -95,7 +95,7 @@ aside {
           flex-direction: row;
 }
 
-.rooms .room div {
+.rooms .room div:first-child {
   min-width: 200px;
 }
 

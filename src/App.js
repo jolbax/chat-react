@@ -65,6 +65,9 @@ class App extends Component {
             firebase={firebase}
             handleRoomClick={room => this.handleRoomClick(room)}
             deletedRoom={room => this.setDeletedRoom(room)}
+            username={
+              this.state.user ? this.state.user.displayName : "Guest"
+            }
           />
         </aside>
         <main>

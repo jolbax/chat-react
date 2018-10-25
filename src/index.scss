@@ -99,7 +99,9 @@ aside {
     flex-direction: row;
 
     div {
-      min-width: 200px;
+      &:first-child {
+        min-width: 200px;
+      }
     }
 
     &:hover {
