@@ -126,7 +126,6 @@ aside {
   text-align: end;
   border: none;
   background: none;
-  color: #eee;
   border: 2px solid #eee;
   border-radius: 10px;
   height: 30px;
@@ -134,6 +133,10 @@ aside {
 
 .create-room input:first-child {
   background: white;
+}
+
+.create-room input:last-child {
+  color: #eee;
 }
 
 .create-room input:last-child:hover {
