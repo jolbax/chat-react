@@ -1,8 +1,12 @@
 $primary-color: rgb(74, 58, 74);
-$hover-color: rgb(44, 34, 44);
+$hover-aside-color: rgb(44, 34, 44);
+$hover-main-color: lightgray;
 $background: #eee;
 $secondary-color: #fff;
 
+* {
+  box-sizing: border-box;
+}
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -51,12 +55,13 @@ header {
 aside {
   box-sizing: inherit;
   background: $primary-color;
-  padding: 10px 20px;
+  // padding: 10px 0;
   color: white;
   grid-area: a;
 }
 
 .user-authentication {
+  padding: 10px 5px 0 5px;
   font-size: 1.2rem;
 
   input {
@@ -65,27 +70,42 @@ aside {
     border: none;
     background: none;
     color: $background;
-    border: 1px solid #eee;
+    border: 2px solid #eee;
     border-radius: 10px;
 
     &:hover {
-      border: 2px solid #eee;
-      border-radius: 10px;
+      background: $hover-aside-color;
     }
   }
 
 }
 
 .rooms-list {
-  padding: 30px 0;
+  // padding: 20px 5px 0 5px;
+  display: grid;
+  grid-template-areas:
+  'l'
+  'c';
+  grid-template-rows: 1fr 50px;
+  min-height: 95%;
 
-  div {
+}
+
+.rooms {
+  grid-area: l;
+  padding-top: 20px;
+
+  .room {
     display: flex;
     flex-direction: row;
-    width: 150px;
+    padding: 0 5px;
+
+    div {
+      width: 150px;
+    }
 
     &:hover {
-      background: $hover-color;
+      background: $hover-aside-color;
     }
 
     button {
@@ -97,6 +117,34 @@ aside {
       &:hover {
         border: 1px solid #eee;
         border-radius: 10%;
+      }
+    }
+  }
+}
+
+.create-room {
+  grid-area: c;
+
+  input {
+    padding: 0 10px;
+    margin-left: 10px;
+    text-align: end;
+    border: none;
+    background: none;
+    color: $background;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    height: 30px;
+
+    &:first-child {
+      background: white;
+    }
+
+    &:last-child{
+
+      &:hover {
+        background: $hover-aside-color;
+        border-radius: 10px;
       }
     }
   }
@@ -158,10 +206,14 @@ main {
     }
 
     &:last-child {
-      height: 36px;
+      height: 30px;
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
       min-width: 10%;
+
+      &:hover {
+        background: $hover-main-color;
+      }
 
     }
   }
