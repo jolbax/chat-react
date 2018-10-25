@@ -1,3 +1,8 @@
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -35,7 +40,6 @@ aside {
   -webkit-box-sizing: inherit;
           box-sizing: inherit;
   background: #4a3a4a;
-  padding: 10px 20px;
   color: white;
   -ms-grid-row: 2;
   -ms-grid-row-span: 11;
@@ -45,6 +49,7 @@ aside {
 }
 
 .user-authentication {
+  padding: 10px 5px 0 5px;
   font-size: 1.2rem;
 }
 
@@ -54,20 +59,31 @@ aside {
   border: none;
   background: none;
   color: #eee;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-.user-authentication input:hover {
   border: 2px solid #eee;
   border-radius: 10px;
 }
 
-.rooms-list {
-  padding: 30px 0;
+.user-authentication input:hover {
+  background: #2c222c;
 }
 
-.rooms-list div {
+.rooms-list {
+  display: -ms-grid;
+  display: grid;
+      grid-template-areas: 'l' 'c';
+  -ms-grid-rows: 1fr 50px;
+      grid-template-rows: 1fr 50px;
+  min-height: 95%;
+}
+
+.rooms {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: l;
+  padding-top: 20px;
+}
+
+.rooms .room {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -75,23 +91,54 @@ aside {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  padding: 0 5px;
+}
+
+.rooms .room div {
   width: 150px;
 }
 
-.rooms-list div:hover {
+.rooms .room:hover {
   background: #2c222c;
 }
 
-.rooms-list div button {
+.rooms .room button {
   text-align: end;
   border: none;
   background: none;
   color: #eee;
 }
 
-.rooms-list div button:hover {
+.rooms .room button:hover {
   border: 1px solid #eee;
   border-radius: 10%;
+}
+
+.create-room {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: c;
+}
+
+.create-room input {
+  padding: 0 10px;
+  margin-left: 10px;
+  text-align: end;
+  border: none;
+  background: none;
+  color: #eee;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  height: 30px;
+}
+
+.create-room input:first-child {
+  background: white;
+}
+
+.create-room input:last-child:hover {
+  background: #2c222c;
+  border-radius: 10px;
 }
 
 a {
@@ -165,7 +212,7 @@ main {
 }
 
 .create-message input:last-child {
-  height: 36px;
+  height: 30px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   min-width: 10%;

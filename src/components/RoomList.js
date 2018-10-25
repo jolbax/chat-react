@@ -106,25 +106,27 @@ class RoomList extends Component {
   render() {
     return (
       <section className="rooms-list">
-        {this.state.rooms.map(room => (
-          <div key={room.key}>
-            <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
-              <div onClick={() => this.props.handleRoomClick(room)}>
-                {room.name}
-              </div>
-            </Link>
-            <button
-              name="delete-room"
-              className="icon ion-md-remove-circle"
-              onClick={() => this.removeRoom(room)}
-            />
-            <button
-              name="rename-room"
-              className="icon ion-md-create"
-              onClick={() => this.renameRoom(room)}
-            />
-          </div>
-        ))}
+        <div className="rooms">
+          {this.state.rooms.map(room => (
+            <div className="room" key={room.key}>
+              <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
+                <div onClick={() => this.props.handleRoomClick(room)}>
+                  # {room.name}
+                </div>
+              </Link>
+              <button
+                name="delete-room"
+                className="icon ion-md-remove-circle"
+                onClick={() => this.removeRoom(room)}
+              />
+              <button
+                name="rename-room"
+                className="icon ion-md-create"
+                onClick={() => this.renameRoom(room)}
+              />
+            </div>
+          ))}
+        </div>
         <form className="create-room" onSubmit={e => this.createRoom(e)}>
           <input
             type="text"
