@@ -146,6 +146,51 @@ class MessageList extends Component {
     subscription.off();
   }
 
+  convertTimestamp(timestamp) {
+    let getMonth = date => ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero based. Add leading 0.
+    let getDay = date => ("0" + date.getDate()).slice(-2); // Add leading 0.
+
+    let today = new Date(Date.now()),
+      yesterday = (d => new Date(d.setDate(d.getDate() - 1)))(new Date()),
+      d = new Date(timestamp),
+      yyyy = d.getFullYear(),
+      mm = getMonth(d),
+      dd = getDay(d),
+      hh = d.getHours(),
+      h = hh,
+      min = ("0" + d.getMinutes()).slice(-2), // Add leading 0.
+      ampm = "AM",
+      time;
+
+    if (hh > 12) {
+      h = hh - 12;
+      ampm = "PM";
+    } else if (hh === 12) {
+      h = 12;
+      ampm = "PM";
+    } else if (hh == 0) {
+      h = 12;
+    }
+
+    if (
+      yyyy === today.getFullYear() &&
+      mm === getMonth(today) &&
+      dd === getDay(today)
+    ) {
+      time = `Today, ${h}:${min} ${ampm}`;
+    } else if (
+      yyyy === yesterday.getFullYear() &&
+      mm === getMonth(yesterday) &&
+      dd === getDay(yesterday)
+    ) {
+      time = `Yesterday, ${h}:${min} ${ampm}`;
+    } else {
+      time = `${yyyy}-${mm}-${dd}, ${h}:${min} ${ampm}`;
+    }
+
+    return time;
+  }
+
   render() {
     return (
       <section className="message-list">
@@ -159,7 +204,7 @@ class MessageList extends Component {
             <div className="message" key={index}>
               <div>{message.username}</div>
               <div>{message.content}</div>
-              <div>{new Date(message.sentAt).toDateString()}</div>
+              <div>{this.convertTimestamp(message.sentAt)}</div>
               {this.props.username !== "Guest" ? (
                 <div>
                   <button
