@@ -131,7 +131,6 @@ aside {
     text-align: end;
     border: none;
     background: none;
-    color: $background;
     border: 2px solid #eee;
     border-radius: 10px;
     height: 30px;
@@ -141,7 +140,7 @@ aside {
     }
 
     &:last-child{
-
+      color: $background;
       &:hover {
         background: $hover-aside-color;
         border-radius: 10px;
