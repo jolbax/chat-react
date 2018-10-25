@@ -19,14 +19,14 @@ code {
   margin: 10vh auto;
   max-width: 800px;
   min-width: 500px;
-  border: 1px solid;
+  border: 3px solid grey;
   border-radius: 10px;
   overflow: hidden;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   display: -ms-grid;
   display: grid;
-      grid-template-areas: 'h h h h h h h h h h h h' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m' 'a a m m m m m m m m m m';
+      grid-template-areas: 'h h h h h h h h h h h h' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m' 'a a a m m m m m m m m m';
 }
 
 header {
@@ -34,6 +34,9 @@ header {
   -ms-grid-column: 1;
   -ms-grid-column-span: 12;
   grid-area: h;
+  background: #eee;
+  color: gray;
+  padding-left: 10px;
 }
 
 aside {
@@ -44,12 +47,12 @@ aside {
   -ms-grid-row: 2;
   -ms-grid-row-span: 11;
   -ms-grid-column: 1;
-  -ms-grid-column-span: 2;
+  -ms-grid-column-span: 3;
   grid-area: a;
 }
 
 .user-authentication {
-  padding: 10px 5px 0 5px;
+  padding: 10px 0 0 10px;
   font-size: 1.2rem;
 }
 
@@ -70,17 +73,16 @@ aside {
 .rooms-list {
   display: -ms-grid;
   display: grid;
-      grid-template-areas: 'l' 'c';
-  -ms-grid-rows: 1fr 50px;
-      grid-template-rows: 1fr 50px;
+      grid-template-areas: '. . .' '. l .' '. c .';
+  -ms-grid-rows: 50px 1fr 50px;
+      grid-template-rows: 50px 1fr 50px;
   min-height: 95%;
 }
 
 .rooms {
-  -ms-grid-row: 1;
-  -ms-grid-column: 1;
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
   grid-area: l;
-  padding-top: 20px;
 }
 
 .rooms .room {
@@ -91,11 +93,10 @@ aside {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  padding: 0 5px;
 }
 
 .rooms .room div {
-  width: 150px;
+  min-width: 200px;
 }
 
 .rooms .room:hover {
@@ -115,8 +116,8 @@ aside {
 }
 
 .create-room {
-  -ms-grid-row: 2;
-  -ms-grid-column: 1;
+  -ms-grid-row: 3;
+  -ms-grid-column: 2;
   grid-area: c;
 }
 
@@ -158,15 +159,15 @@ main {
   background: white;
   height: 100%;
   -ms-grid-row: 2;
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 5;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 7;
   grid-area: m;
 }
 
 .message-list {
   display: -ms-grid;
   display: grid;
-      grid-template-areas: 'r r  r r r' 'm m m m m' '. i i i .';
+      grid-template-areas: 'r r r r r r r r r' '. m m m m m m m .' '. i i i i i i i .';
   -ms-grid-rows: 50px 1fr 50px;
       grid-template-rows: 50px 1fr 50px;
   height: 70vh;
@@ -179,7 +180,7 @@ main {
   border-bottom: 2px solid lightgrey;
   -ms-grid-row: 1;
   -ms-grid-column: 1;
-  -ms-grid-column-span: 5;
+  -ms-grid-column-span: 9;
   grid-area: r;
 }
 
@@ -187,8 +188,8 @@ main {
   overflow: hidden;
   overflow-y: scroll;
   -ms-grid-row: 2;
-  -ms-grid-column: 1;
-  -ms-grid-column-span: 5;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 7;
   grid-area: m;
 }
 
@@ -197,8 +198,9 @@ main {
       justify-self: center;
   -ms-grid-row: 3;
   -ms-grid-column: 2;
-  -ms-grid-column-span: 3;
+  -ms-grid-column-span: 7;
   grid-area: i;
+  min-width: 100%;
 }
 
 .create-message input {
@@ -218,7 +220,7 @@ main {
   height: 30px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  min-width: 10%;
+  min-width: 20%;
 }
 
 .create-message input:last-child:hover {
@@ -234,7 +236,7 @@ main {
       -ms-flex-direction: column;
           flex-direction: column;
   padding: 10px;
-  margin: 10px;
+  margin-top: 10px;
   border: 1px solid lightgray;
   border-radius: 10px;
   background: #eee;
