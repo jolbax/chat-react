@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 
 class MessageList extends Component {
   constructor(props) {
@@ -53,6 +54,11 @@ class MessageList extends Component {
     if (prevProps.deletedRoom !== this.props.deletedRoom) {
       this.cleanUpMessages(this.props.deletedRoom);
     }
+
+    // Grab the rendered message list and scroll to the bottom
+    const node= document.querySelector('.messages');
+    node.scrollTop = node.scrollHeight;
+
   }
 
   componentWillUnmount() {
