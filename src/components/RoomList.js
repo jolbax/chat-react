@@ -110,6 +110,7 @@ class RoomList extends Component {
     return (
       <section className="rooms-list">
         <div className="rooms">
+        <h3>Rooms</h3>
           {this.state.rooms.map(room => (
             <div className="room" key={room.key}>
               <Link to={`/room/${room.key}&${room.name}`} key={room.key}>

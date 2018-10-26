@@ -27,6 +27,12 @@ class MessageList extends Component {
     });
   }
 
+  componentWillUpdate() {
+    const node = document.querySelector(".messages");
+    this.shouldScrollToButton =
+      node.scrollTop + node.clientHeight + 100 >= node.scrollHeight;
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.roomId !== this.props.match.params.roomId) {
       this.subscription.off();
@@ -55,8 +61,10 @@ class MessageList extends Component {
     }
 
     // Grab the rendered message list and scroll to the bottom
-    const node = document.querySelector(".messages");
-    node.scrollTop = node.scrollHeight;
+    if (this.shouldScrollToButton) {
+      const node = document.querySelector(".messages");
+      node.scrollTop = node.scrollHeight;
+    }
   }
 
   componentWillUnmount() {
