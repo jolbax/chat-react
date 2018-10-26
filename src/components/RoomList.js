@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 class RoomList extends Component {
   constructor(props) {
@@ -78,7 +78,10 @@ class RoomList extends Component {
     this.roomsRef
       .child(room.key)
       .remove()
-      .then(() => alert(`Room "${room.name}" has been deleted`))
+      .then(() => {
+        alert(`Room "${room.name}" has been deleted`);
+        this.props.history.push('/');
+      })
       .catch(error => console.log(error));
   }
 
@@ -146,4 +149,4 @@ class RoomList extends Component {
   }
 }
 
-export default RoomList;
+export default withRouter(RoomList);
