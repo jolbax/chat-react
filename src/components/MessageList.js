@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import ReactDOM from "react-dom";
 
 class MessageList extends Component {
   constructor(props) {
@@ -56,9 +56,8 @@ class MessageList extends Component {
     }
 
     // Grab the rendered message list and scroll to the bottom
-    const node= document.querySelector('.messages');
+    const node = document.querySelector(".messages");
     node.scrollTop = node.scrollHeight;
-
   }
 
   componentWillUnmount() {
@@ -212,16 +211,20 @@ class MessageList extends Component {
               <div>{message.content}</div>
               <div>{this.convertTimestamp(message.sentAt)}</div>
               {this.props.username !== "Guest" ? (
-                <div>
-                  <button
-                    className="icon ion-md-remove-circle"
-                    onClick={() => this.deleteMessage(message.key)}
-                  />
-                  <button
-                    className="icon ion-md-create"
-                    onClick={() => this.editMessage(message)}
-                  />
-                </div>
+                this.props.username === message.username ? (
+                  <div>
+                    <button
+                      className="icon ion-md-remove-circle"
+                      onClick={() => this.deleteMessage(message.key)}
+                    />
+                    <button
+                      className="icon ion-md-create"
+                      onClick={() => this.editMessage(message)}
+                    />
+                  </div>
+                ) : (
+                  ""
+                )
               ) : (
                 ""
               )}
