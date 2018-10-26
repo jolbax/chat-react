@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import ReactDOM from "react-dom";
 
 class MessageList extends Component {
   constructor(props) {
@@ -173,7 +172,7 @@ class MessageList extends Component {
     } else if (hh === 12) {
       h = 12;
       ampm = "PM";
-    } else if (hh == 0) {
+    } else if (hh === 0) {
       h = 12;
     }
 
