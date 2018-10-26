@@ -7,13 +7,16 @@ class User extends Component {
       .onAuthStateChanged(user => this.props.setUser(user));
   }
 
-  handleAuth(status) {
+  handleAuth() {
     const provider = new this.props.firebase.auth.GoogleAuthProvider();
     const auth = this.props.firebase.auth();
     if (this.props.userLoggedIn) {
-      auth.signOut().catch(error => {
-        console.log(error);
-      });
+      auth
+        .signOut()
+        .then(() => this.setUser(null))
+        .catch(error => {
+          console.log(error);
+        });
     } else {
       auth.signInWithPopup(provider).catch(error => {
         console.log(error.code, error.message);
