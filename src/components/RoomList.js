@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+import withUser from "./withUser";
 
-class RoomList extends Component {
+class renderRoomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +13,7 @@ class RoomList extends Component {
   }
 
   componentDidMount() {
+
     this.roomsRef.on("child_added", snapshot => {
       this.updateCreatedRooms(snapshot);
     });
@@ -118,7 +120,7 @@ class RoomList extends Component {
                   # {room.name}
                 </div>
               </Link>
-              {this.props.username !== "Guest" ? (
+              {this.props.userData ? this.props.displayName !== "Guest" ? (
                 <div>
                   <button
                     name="delete-room"
@@ -131,6 +133,8 @@ class RoomList extends Component {
                     onClick={() => this.renameRoom(room)}
                   />
                 </div>
+              ) : (
+                ""
               ) : (
                 ""
               )}
@@ -149,5 +153,7 @@ class RoomList extends Component {
     );
   }
 }
+
+const RoomList = withUser(renderRoomList, props => props)
 
 export default withRouter(RoomList);

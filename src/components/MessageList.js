@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import withUser from "./withUser"
 
-class MessageList extends Component {
+class renderMessageList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -114,7 +115,7 @@ class MessageList extends Component {
       this.messagesRef.push({
         content: this.state.newMessage,
         roomId: this.props.match.params.roomId,
-        username: this.props.username,
+        username: this.props.userData.displayName,
         sentAt: this.props.firebase.database.ServerValue.TIMESTAMP
       });
       this.clearInput();
@@ -217,8 +218,8 @@ class MessageList extends Component {
               <div>{message.username}</div>
               <div>{message.content}</div>
               <div>{this.convertTimestamp(message.sentAt)}</div>
-              {this.props.username !== "Guest" ? (
-                this.props.username === message.username ? (
+              {this.props.userData ? this.props.userData.displayName !== "Guest" ? (
+                this.props.userData.displayName === message.username ? (
                   <div>
                     <button
                       className="icon ion-md-remove-circle"
@@ -232,6 +233,8 @@ class MessageList extends Component {
                 ) : (
                   ""
                 )
+              ) : (
+                ""
               ) : (
                 ""
               )}
@@ -250,5 +253,7 @@ class MessageList extends Component {
     );
   }
 }
+
+const MessageList = withUser(renderMessageList);
 
 export default withRouter(MessageList);

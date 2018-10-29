@@ -1,43 +1,17 @@
-import React, { Component } from "react";
+import React from "react";
+import withUser from "./withUser";
 
-class User extends Component {
-  componentDidMount() {
-    this.props.firebase
-      .auth()
-      .onAuthStateChanged(user => this.props.setUser(user));
-  }
+const renderUser = ({ userData, stateHandler }) => {
+  return (
+    <section className="user-authentication">
+      <label>
+        {userData ? userData.displayName : "Guest"}
+        <input type="submit" value={userData ? "Sign-out" : "Sign-in"} onClick={() => stateHandler()} />
+      </label>
+    </section>
+  );
+};
 
-  handleAuth() {
-    const provider = new this.props.firebase.auth.GoogleAuthProvider();
-    const auth = this.props.firebase.auth();
-    if (this.props.userLoggedIn) {
-      auth
-        .signOut()
-        .then(() => this.setUser(null))
-        .catch(error => {
-          console.log(error);
-        });
-    } else {
-      auth.signInWithPopup(provider).catch(error => {
-        console.log(error.code, error.message);
-      });
-    }
-  }
-
-  render() {
-    return (
-      <section className="user-authentication">
-        <label>
-          {this.props.userLabel}
-          <input
-            type="submit"
-            value={this.props.buttonValue}
-            onClick={() => this.handleAuth()}
-          />
-        </label>
-      </section>
-    );
-  }
-}
+const User = withUser(renderUser, props => props);
 
 export default User;

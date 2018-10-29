@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import RoomList from "./components/RoomList";
 import MessageList from "./components/MessageList";
 import User from "./components/User";
+import UserList from "./components/UserList";
 import "./App.css";
 
 // Initialize Firebase
@@ -21,7 +22,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: "",
       activeRoomName: "",
       activeRoomId: "",
       deletedRoom: ""
@@ -35,14 +35,8 @@ class App extends Component {
     });
   }
 
-  setUser(user) {
-    this.setState({
-      user: user
-    });
-  }
-
   setDeletedRoom(room) {
-    this.setState({deletedRoom:room});
+    this.setState({ deletedRoom: room });
   }
 
   render() {
@@ -54,20 +48,14 @@ class App extends Component {
         <aside>
           <User
             firebase={firebase}
-            setUser={user => this.setUser(user)}
-            userLabel={
-              this.state.user ? `${this.state.user.displayName}` : "Guest"
-            }
-            buttonValue={this.state.user ? "Sign-out" : "Sign-in"}
-            userLoggedIn={this.state.user ? true : false}
+          />
+          <UserList
+            firebase={firebase}
           />
           <RoomList
             firebase={firebase}
             handleRoomClick={room => this.handleRoomClick(room)}
             deletedRoom={room => this.setDeletedRoom(room)}
-            username={
-              this.state.user ? this.state.user.displayName : "Guest"
-            }
           />
         </aside>
         <main>
@@ -78,9 +66,6 @@ class App extends Component {
                 firebase={firebase}
                 activeRoomName={this.state.activeRoomName}
                 activeRoomId={this.state.activeRoomId}
-                username={
-                  this.state.user ? this.state.user.displayName : "Guest"
-                }
                 deletedRoom={this.state.deletedRoom}
               />
             )}
