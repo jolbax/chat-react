@@ -18,23 +18,17 @@ const withUser = BaseComponent => {
     componentDidMount() {
       this.props.firebase.auth().onAuthStateChanged(user => {
         this.setUser(user);
-        this.usersRef
-          .child(user.uid)
-          .set({
-            online: true,
-            displayName: user.displayName,
-            role: this.adminID === user.uid ? "admin" : "user"
-          })
-          .catch(error => console.log(error));
       });
 
       this.usersRef.on("child_added", snapshot => {
         const user = snapshot.val();
         user.key = snapshot.key;
-        console.log(user);
-
         this.setState({ onlineUsers: this.state.onlineUsers.concat(user) });
       });
+    }
+
+    componentWillUnmount() {
+      this.usersRef.off();
     }
 
     setUser(user) {
@@ -50,7 +44,8 @@ const withUser = BaseComponent => {
           .then(() => {
             this.usersRef
               .child(this.state.user.uid)
-              .set({ online: false })
+              .child("online")
+              .set(false)
               .catch(error => console.log(error));
             this.setUser(null);
           })
@@ -58,9 +53,21 @@ const withUser = BaseComponent => {
             console.log(error);
           });
       } else {
-        auth.signInWithPopup(provider).catch(error => {
-          console.log(error.code, error.message);
-        });
+        auth
+          .signInWithPopup(provider)
+          .then(data => {
+            this.usersRef
+              .child(data.user.uid)
+              .set({
+                online: true,
+                displayName: data.user.displayName,
+                role: this.adminID === data.user.uid ? "admin" : "user"
+              })
+              .catch(error => console.log(error));
+          })
+          .catch(error => {
+            console.log(error.code, error.message);
+          });
       }
     }
 
