@@ -36,7 +36,11 @@ class App extends Component {
   }
 
   setDeletedRoom(room) {
-    this.setState({ deletedRoom: room });
+    this.setState({
+      activeRoomName: "",
+      activeRoomId: "",
+      deletedRoom: room
+    });
   }
 
   render() {
@@ -46,12 +50,8 @@ class App extends Component {
           <h1>React Chat</h1>
         </header>
         <aside>
-          <User
-            firebase={firebase}
-          />
-          <UserList
-            firebase={firebase}
-          />
+          <User firebase={firebase} />
+          <UserList firebase={firebase} />
           <RoomList
             firebase={firebase}
             handleRoomClick={room => this.handleRoomClick(room)}

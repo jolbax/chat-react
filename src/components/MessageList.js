@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import withUser from "./withUser"
+import withUser from "./withUser";
 
 class renderMessageList extends Component {
   constructor(props) {
@@ -81,10 +81,12 @@ class renderMessageList extends Component {
   }
 
   updateDeletedMessages(snapshot) {
-    this.setState({
-      messages: this.state.messages.filter(
-        message => message.key !== snapshot.key
-      )
+    this.setState(prevState => {
+      return {
+        messages: prevState.messages.filter(
+          message => message.key !== snapshot.key
+        )
+      };
     });
   }
 
@@ -218,26 +220,25 @@ class renderMessageList extends Component {
               <div>{message.username}</div>
               <div>{message.content}</div>
               <div>{this.convertTimestamp(message.sentAt)}</div>
-              {this.props.userData ? this.props.userData.displayName !== "Guest" ? (
-                this.props.userData.displayName === message.username ? (
-                  <div>
-                    <button
-                      className="icon ion-md-remove-circle"
-                      onClick={() => this.deleteMessage(message.key)}
-                    />
-                    <button
-                      className="icon ion-md-create"
-                      onClick={() => this.editMessage(message)}
-                    />
-                  </div>
-                ) : (
-                  ""
-                )
-              ) : (
-                ""
-              ) : (
-                ""
-              )}
+              {/* A better more readable way to create nested conditions */}
+              {(() => {
+                if (this.props.userData) {
+                  if (this.props.userData.displayName === message.username) {
+                    return (
+                      <div>
+                        <button
+                          className="icon ion-md-remove-circle"
+                          onClick={() => this.deleteMessage(message.key)}
+                        />
+                        <button
+                          className="icon ion-md-create"
+                          onClick={() => this.editMessage(message)}
+                        />
+                      </div>
+                    );
+                  }
+                }
+              })()}
             </div>
           ))}
         </div>

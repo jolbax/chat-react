@@ -82,7 +82,7 @@ class renderRoomList extends Component {
       .remove()
       .then(() => {
         alert(`Room "${room.name}" has been deleted`);
-        this.props.history.push('/');
+        this.props.history.goBack();
       })
       .catch(error => console.log(error));
   }
@@ -120,7 +120,7 @@ class renderRoomList extends Component {
                   # {room.name}
                 </div>
               </Link>
-              {this.props.userData ? this.props.displayName !== "Guest" ? (
+              {this.props.userData ? this.props.userData.displayName !== "Guest" ? (
                 <div>
                   <button
                     name="delete-room"
