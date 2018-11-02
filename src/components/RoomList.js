@@ -13,7 +13,6 @@ class renderRoomList extends Component {
   }
 
   componentDidMount() {
-
     this.roomsRef.on("child_added", snapshot => {
       this.updateCreatedRooms(snapshot);
     });
@@ -112,7 +111,7 @@ class renderRoomList extends Component {
     return (
       <section className="rooms-list">
         <div className="rooms">
-        <h3>Rooms</h3>
+          <h3>Rooms</h3>
           {this.state.rooms.map(room => (
             <div className="room" key={room.key}>
               <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
@@ -120,24 +119,26 @@ class renderRoomList extends Component {
                   # {room.name}
                 </div>
               </Link>
-              {this.props.userData ? this.props.userData.displayName !== "Guest" ? (
-                <div>
-                  <button
-                    name="delete-room"
-                    className="icon ion-md-remove-circle"
-                    onClick={() => this.removeRoom(room)}
-                  />
-                  <button
-                    name="rename-room"
-                    className="icon ion-md-create"
-                    onClick={() => this.renameRoom(room)}
-                  />
-                </div>
-              ) : (
-                ""
-              ) : (
-                ""
-              )}
+              {(() => {
+                if (this.props.userData) {
+                  if (this.props.userData.displayName !== "Guest") {
+                    return (
+                      <div>
+                        <button
+                          name="delete-room"
+                          className="icon ion-md-remove-circle"
+                          onClick={() => this.removeRoom(room)}
+                        />
+                        <button
+                          name="rename-room"
+                          className="icon ion-md-create"
+                          onClick={() => this.renameRoom(room)}
+                        />
+                      </div>
+                    );
+                  }
+                }
+              })()}
             </div>
           ))}
         </div>
@@ -154,6 +155,6 @@ class renderRoomList extends Component {
   }
 }
 
-const RoomList = withUser(renderRoomList, props => props)
+const RoomList = withUser(renderRoomList, props => props);
 
 export default withRouter(RoomList);
