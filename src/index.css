@@ -70,7 +70,7 @@ aside {
   background: #2c222c;
 }
 
-.rooms-list {
+.rooms {
   display: -ms-grid;
   display: grid;
       grid-template-areas: '. . .' '. l .' '. c .';
@@ -79,13 +79,13 @@ aside {
   min-height: 95%;
 }
 
-.rooms {
+.rooms-list {
   -ms-grid-row: 2;
   -ms-grid-column: 2;
   grid-area: l;
 }
 
-.rooms .room {
+.rooms-list .room {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -95,22 +95,22 @@ aside {
           flex-direction: row;
 }
 
-.rooms .room div:first-child {
+.rooms-list .room div:first-child {
   min-width: 200px;
 }
 
-.rooms .room:hover {
+.rooms-list .room:hover {
   background: #2c222c;
 }
 
-.rooms .room button {
+.rooms-list .room button {
   text-align: end;
   border: none;
   background: none;
   color: #eee;
 }
 
-.rooms .room button:hover {
+.rooms-list .room button:hover {
   border: 1px solid #eee;
   border-radius: 10%;
 }
@@ -164,7 +164,7 @@ main {
   grid-area: m;
 }
 
-.message-list {
+.messages {
   display: -ms-grid;
   display: grid;
       grid-template-areas: 'r r r r r r r r r' '. m m m m m m m .' '. i i i i i i i .';
@@ -173,7 +173,7 @@ main {
   height: 70vh;
 }
 
-.message-list h2 {
+.messages h2 {
   text-align: center;
   margin: 0;
   padding: 10px;
@@ -184,7 +184,7 @@ main {
   grid-area: r;
 }
 
-.messages {
+.messages-list {
   overflow: hidden;
   overflow-y: scroll;
   -ms-grid-row: 2;

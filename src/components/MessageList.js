@@ -1,11 +1,103 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-class MessageList extends Component {
+const Message = (props) => {
+  const { message, user, handleDeleteMessage, handleEditMessage } = props;
+  return (
+    <div className="message">
+      <div>{message.username}</div>
+      <div>{message.content}</div>
+      <div>{Messages.convertTimestamp(message.sentAt)}</div>
+      {user ? (
+        user.displayName === message.username ? (
+          <div>
+            <button
+              className="icon ion-md-remove-circle"
+              onClick={() => handleDeleteMessage(message.key)}
+            />
+            <button
+              className="icon ion-md-create"
+              onClick={() => handleEditMessage(message)}
+            />
+          </div>
+        ) : (
+          ""
+        )
+      ) : (
+        ""
+      )}
+    </div>
+  );
+};
+
+class MessagesList extends Component {
+  render() {
+    const {
+      user,
+      deletedRoom,
+      roomName,
+      messages,
+      handleDeleteMessage,
+      handleEditMessage
+    } = this.props;
+    return (
+      <div className="messages-list">
+        <h2>{deletedRoom.name === roomName ? "Room unavailable" : roomName}</h2>
+        {messages.map(message => (
+          <Message
+            key={message.key}
+            message={message}
+            user={user}
+            handleDeleteMessage={message => handleDeleteMessage(message)}
+            handleEditMessage={message => handleEditMessage(message)}
+          />
+        ))}
+      </div>
+    );
+  }
+}
+class MessageForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newMessage: "",
+      message: ""
+    };
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(e) {
+    this.setState({
+      message: e.target.value
+    });
+  }
+
+  clearInput() {
+    this.setState({
+      message: ""
+    });
+  }
+
+  render() {
+    const { message } = this.state;
+    const { handleSubmit } = this.props;
+    return (
+      <form
+        className="create-message"
+        onSubmit={e => {
+          handleSubmit(e, message);
+          this.clearInput();
+        }}
+      >
+        <input type="text" value={message} onChange={this.handleInputChange} />
+        <input type="submit" value="Send" />
+      </form>
+    );
+  }
+}
+class Messages extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       messages: []
     };
     this.messagesRef = this.props.firebase.database().ref("messages");
@@ -28,7 +120,7 @@ class MessageList extends Component {
   }
 
   componentWillUpdate() {
-    const node = document.querySelector(".messages");
+    const node = document.querySelector(".messages-list");
     this.shouldScrollToButton =
       node.scrollTop + node.clientHeight + 100 >= node.scrollHeight;
   }
@@ -62,7 +154,7 @@ class MessageList extends Component {
 
     // Grab the rendered message list and scroll to the bottom
     if (this.shouldScrollToButton) {
-      const node = document.querySelector(".messages");
+      const node = document.querySelector(".messages-list");
       node.scrollTop = node.scrollHeight;
     }
   }
@@ -96,28 +188,16 @@ class MessageList extends Component {
     this.setState({ messages: editedMessages });
   }
 
-  handleInputChange(e) {
-    this.setState({
-      newMessage: e.target.value
-    });
-  }
-
-  clearInput() {
-    this.setState({
-      newMessage: ""
-    });
-  }
-
-  pushMessage(e) {
+  pushMessage(e, message) {
     e.preventDefault();
-    if (this.state.newMessage) {
+    const { user, match, firebase } = this.props;
+    if (message) {
       this.messagesRef.push({
-        content: this.state.newMessage,
-        roomId: this.props.match.params.roomId,
-        username: this.props.username,
-        sentAt: this.props.firebase.database.ServerValue.TIMESTAMP
+        content: message,
+        roomId: match.params.roomId,
+        username: user.displayName,
+        sentAt: firebase.database.ServerValue.TIMESTAMP
       });
-      this.clearInput();
     } else {
       alert("This is an empty message!");
     }
@@ -158,7 +238,7 @@ class MessageList extends Component {
     subscription.off();
   }
 
-  convertTimestamp(timestamp) {
+  static convertTimestamp(timestamp) {
     let getMonth = date => ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero based. Add leading 0.
     let getDay = date => ("0" + date.getDate()).slice(-2); // Add leading 0.
 
@@ -204,51 +284,24 @@ class MessageList extends Component {
   }
 
   render() {
+    const { user, deletedRoom, match } = this.props;
+    const { messages } = this.state;
     return (
-      <section className="message-list">
-        <h2>
-          {this.props.deletedRoom.name === this.props.match.params.roomName
-            ? "Room unavailable"
-            : this.props.match.params.roomName}
-        </h2>
-        <div className="messages">
-          {this.state.messages.map((message, index) => (
-            <div className="message" key={index}>
-              <div>{message.username}</div>
-              <div>{message.content}</div>
-              <div>{this.convertTimestamp(message.sentAt)}</div>
-              {this.props.username !== "Guest" ? (
-                this.props.username === message.username ? (
-                  <div>
-                    <button
-                      className="icon ion-md-remove-circle"
-                      onClick={() => this.deleteMessage(message.key)}
-                    />
-                    <button
-                      className="icon ion-md-create"
-                      onClick={() => this.editMessage(message)}
-                    />
-                  </div>
-                ) : (
-                  ""
-                )
-              ) : (
-                ""
-              )}
-            </div>
-          ))}
-        </div>
-        <form className="create-message" onSubmit={e => this.pushMessage(e)}>
-          <input
-            type="text"
-            value={this.state.newMessage}
-            onChange={e => this.handleInputChange(e)}
-          />
-          <input type="submit" value="Send" />
-        </form>
+      <section className="messages">
+        <MessagesList
+          user={user}
+          deletedRoom={deletedRoom}
+          roomName={match.params.roomName}
+          messages={messages}
+          handleDeleteMessage={message => this.deleteMessage(message)}
+          handleEditMessage={message => this.editMessage(message)}
+        />
+        <MessageForm
+          handleSubmit={(e, message) => this.pushMessage(e, message)}
+        />
       </section>
     );
   }
 }
 
-export default withRouter(MessageList);
+export default withRouter(Messages);

@@ -1,8 +1,8 @@
 import * as firebase from "firebase";
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
-import RoomList from "./components/RoomList";
-import MessageList from "./components/MessageList";
+import Rooms from "./components/RoomList";
+import Messages from "./components/MessageList";
 import User from "./components/User";
 import "./App.css";
 
@@ -17,76 +17,95 @@ var config = {
 };
 firebase.initializeApp(config);
 
-class App extends Component {
+class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
       user: "",
-      activeRoomName: "",
-      activeRoomId: "",
+      activeRoom: "",
       deletedRoom: ""
     };
+
+    this.handleRoomClick = this.handleRoomClick.bind(this);
+    this.setDeletedRoom = this.setDeletedRoom.bind(this);
+    this.handleSetUser = this.handleSetUser.bind(this);
   }
 
   handleRoomClick(room) {
     this.setState({
-      activeRoomName: room.name,
-      activeRoomId: room.key
+      activeRoom: room,
     });
   }
 
-  setUser(user) {
+  handleSetUser = (user) => {
     this.setState({
       user: user
     });
   }
 
   setDeletedRoom(room) {
-    this.setState({deletedRoom:room});
+    this.setState({ deletedRoom: room });
   }
 
   render() {
+    const { user, deletedRoom } = this.state;
     return (
-      <div className="app">
-        <header>
-          <h1>React Chat</h1>
-        </header>
-        <aside>
-          <User
-            firebase={firebase}
-            setUser={user => this.setUser(user)}
-            userLabel={
-              this.state.user ? `${this.state.user.displayName}` : "Guest"
-            }
-            buttonValue={this.state.user ? "Sign-out" : "Sign-in"}
-            userLoggedIn={this.state.user ? true : false}
-          />
-          <RoomList
-            firebase={firebase}
-            handleRoomClick={room => this.handleRoomClick(room)}
-            deletedRoom={room => this.setDeletedRoom(room)}
-            username={
-              this.state.user ? this.state.user.displayName : "Guest"
-            }
-          />
-        </aside>
-        <main>
-          <Route
-            path="/room/:roomId&:roomName"
-            render={() => (
-              <MessageList
-                firebase={firebase}
-                activeRoomName={this.state.activeRoomName}
-                activeRoomId={this.state.activeRoomId}
-                username={
-                  this.state.user ? this.state.user.displayName : "Guest"
-                }
-                deletedRoom={this.state.deletedRoom}
-              />
-            )}
-          />
-        </main>
+      <div>
+        {this.props.render(
+          user,
+          deletedRoom,
+          this.handleRoomClick,
+          this.setDeletedRoom,
+          this.handleSetUser
+        )}
       </div>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Chat
+        render={(
+          user,
+          deletedRoom,
+          handleRoomClick,
+          setDeletedRoom,
+          handleSetUser
+        ) => (
+          <div className="app">
+            <header>
+              <h1>React Chat</h1>
+            </header>
+            <aside>
+              <User
+                firebase={firebase}
+                setUser={user => handleSetUser(user)}
+                user={user}
+              />
+              <Rooms
+                firebase={firebase}
+                handleRoomClick={room => handleRoomClick(room)}
+                deletedRoom={room => setDeletedRoom(room)}
+                user={user}
+              />
+            </aside>
+            <main>
+              <Route
+                path="/room/:roomId&:roomName"
+                render={() => (
+                  <Messages
+                    firebase={firebase}
+                    user={user}
+                    deletedRoom={deletedRoom}
+                  />
+                )}
+              />
+            </main>
+          </div>
+        )}
+      />
     );
   }
 }

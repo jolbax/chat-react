@@ -1,11 +1,108 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
-class RoomList extends Component {
+class RoomsList extends Component {
+  render() {
+    const {
+      rooms,
+      handleRoomClick,
+      user,
+      handleRemoveRoom,
+      handleRenameRoom
+    } = this.props;
+    return (
+      <div className="rooms-list">
+        <h3>Rooms</h3>
+        {rooms.map(room => (
+          <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
+            <Room
+              room={room}
+              handleRoomClick={e => handleRoomClick(e)}
+              buttonsEnabled={user ? true : false}
+              handleRemoveRoom={() => handleRemoveRoom(room)}
+              handleRenameRoom={() => handleRenameRoom(room)}
+            />
+          </Link>
+        ))}
+      </div>
+    );
+  }
+}
+
+const Room = props => {
+  const {
+    room,
+    handleRoomClick,
+    buttonsEnabled,
+    handleRemoveRoom,
+    handleRenameRoom
+  } = props;
+  return (
+    <div className="room">
+      <div onClick={() => handleRoomClick(room)}># {room.name}</div>
+      {buttonsEnabled ? (
+        <div>
+          <button
+            name="delete-room"
+            className="icon ion-md-remove-circle"
+            onClick={() => handleRemoveRoom(room)}
+          />
+          <button
+            name="rename-room"
+            className="icon ion-md-create"
+            onClick={() => handleRenameRoom(room)}
+          />
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+};
+class RoomForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newRoomName: "",
+      roomName: ""
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(e) {
+    this.setState({
+      roomName: e.target.value
+    });
+  }
+
+  clearInput() {
+    this.setState({
+      roomName: ""
+    });
+  }
+
+  render() {
+    const { handleSubmit } = this.props;
+    const { roomName } = this.state;
+    return (
+      <form
+        className="create-room"
+        onSubmit={e => {
+          handleSubmit(e, roomName);
+          this.clearInput();
+        }}
+      >
+        <input type="text" value={roomName} onChange={this.handleInputChange} />
+        <input type="submit" value="New room" />
+      </form>
+    );
+  }
+}
+
+class Rooms extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       rooms: []
     };
     this.roomsRef = this.props.firebase.database().ref("rooms");
@@ -53,21 +150,15 @@ class RoomList extends Component {
     this.roomsRef.off();
   }
 
-  createRoom(e) {
+  createRoom(e, roomName) {
     e.preventDefault();
-    if (this.state.newRoomName) {
-      if (
-        !this.state.rooms.filter(room => room.name === this.state.newRoomName)
-          .length > 0
-      ) {
+    if (roomName) {
+      if (!this.state.rooms.filter(room => room.name === roomName).length > 0) {
         this.roomsRef.push({
-          name: this.state.newRoomName
+          name: roomName
         });
-        this.clearInput();
       } else {
-        alert(
-          `"${this.state.newRoomName}" already exists. Choose another name`
-        );
+        alert(`"${roomName}" already exists. Choose another name`);
       }
     } else {
       alert("Please provide a name");
@@ -80,7 +171,7 @@ class RoomList extends Component {
       .remove()
       .then(() => {
         alert(`Room "${room.name}" has been deleted`);
-        this.props.history.push('/');
+        this.props.history.goBack();
       })
       .catch(error => console.log(error));
   }
@@ -94,60 +185,24 @@ class RoomList extends Component {
     }
   }
 
-  handleInputChange(e) {
-    this.setState({
-      newRoomName: e.target.value
-    });
-  }
-
-  clearInput() {
-    this.setState({
-      newRoomName: ""
-    });
-  }
-
   render() {
+    const { rooms } = this.state;
+    const { handleRoomClick, user } = this.props;
     return (
-      <section className="rooms-list">
-        <div className="rooms">
-        <h3>Rooms</h3>
-          {this.state.rooms.map(room => (
-            <div className="room" key={room.key}>
-              <Link to={`/room/${room.key}&${room.name}`} key={room.key}>
-                <div onClick={() => this.props.handleRoomClick(room)}>
-                  # {room.name}
-                </div>
-              </Link>
-              {this.props.username !== "Guest" ? (
-                <div>
-                  <button
-                    name="delete-room"
-                    className="icon ion-md-remove-circle"
-                    onClick={() => this.removeRoom(room)}
-                  />
-                  <button
-                    name="rename-room"
-                    className="icon ion-md-create"
-                    onClick={() => this.renameRoom(room)}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          ))}
-        </div>
-        <form className="create-room" onSubmit={e => this.createRoom(e)}>
-          <input
-            type="text"
-            value={this.state.newRoomName}
-            onChange={e => this.handleInputChange(e)}
-          />
-          <input type="submit" value="New room" />
-        </form>
+      <section className="rooms">
+        <RoomsList
+          rooms={rooms}
+          handleRoomClick={e => handleRoomClick(e)}
+          user={user}
+          handleRemoveRoom={room => this.removeRoom(room)}
+          handleRenameRoom={room => this.renameRoom(room)}
+        />
+        <RoomForm
+          handleSubmit={(e, roomName) => this.createRoom(e, roomName)}
+        />
       </section>
     );
   }
 }
 
-export default withRouter(RoomList);
+export default withRouter(Rooms);

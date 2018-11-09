@@ -80,7 +80,7 @@ aside {
 
 }
 
-.rooms-list {
+.rooms {
   display: grid;
   grid-template-areas:
   '. . .'
@@ -91,7 +91,7 @@ aside {
 
 }
 
-.rooms {
+.rooms-list {
   grid-area: l;
 
   .room {
@@ -164,7 +164,7 @@ main {
   grid-area: m;
 }
 
-.message-list {
+.messages {
   display: grid;
   grid-template-areas:
   'r r r r r r r r r'
@@ -182,7 +182,7 @@ main {
   }
 }
 
-.messages {
+.messages-list {
   overflow: hidden;
   overflow-y: scroll;
   grid-area: m;
