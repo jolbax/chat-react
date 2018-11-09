@@ -195,7 +195,7 @@ class Messages extends Component {
       this.messagesRef.push({
         content: message,
         roomId: match.params.roomId,
-        username: user.displayName,
+        username: user ? user.displayName:"Guest",
         sentAt: firebase.database.ServerValue.TIMESTAMP
       });
     } else {
